@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starmiao.bbs.dao.PostDao">
+
+    <resultMap id="post" type="Post">
+        <id property="id" column="id" javaType="int"/>
+        <result property="username"  column="username" javaType="String"/>
+        <result property="title"  column="title" javaType="String"/>
+        <result property="category"  column="category" javaType="String"/>
+        <result property="content"  column="content" javaType="String"/>
+        <result property="tag"  column="tag" javaType="String"/>
+        <result property="createTime"  column="create_time" javaType="Date"/>
+        <result property="path" column="path" javaType="String"/>
+        <result property="commentNum" column="comment_num" javaType="int"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Post">
+        insert into post (username,title,category,content,tag,create_time)
+        values(#{username},#{title},#{category},#{content},#{tag},#{createTime})
+    </insert>
+    <update id="update" parameterType="Post">
+        update post set username=#{username},title=#{title},category=#{category},content=#{content},tag=#{tag} where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from post where id=#{id}
+    </delete>
+
+    <select id="select" parameterType="int" resultMap="post">
+        select p.*,u.path from post p
+        left join user u
+        on p.username=u.username
+        where p.id=#{id};
+    </select>
+
+    <select id="selectAll" resultMap="post">
+        select * from post
+    </select>
+
+    <select id="selectPostNum" resultType="int">
+        select count(0) from post
+    </select>
+
+
+    <select id="selectMyPostNum" parameterType="String" resultType="int">
+        select count(0) from post where username=#{username}
+    </select>
+
+    <select id="selectAllToHome" parameterType="int" resultMap="post">
+        select * from post as a
+        left join
+        (select post_id,count(0) as comment_num from post p right join comment c on p.id = c.post_id group by post_id) as b
+        on a.id = b.post_id
+        left join user as c on a.username=c.username order by create_time desc
+        limit #{page},10
+    </select>
+
+    <select id="selectAllToHomeOrderByCommentNum" parameterType="int" resultMap="post">
+        select * from post as a
+        left join
+        (select post_id,count(0) as comment_num from post p right join comment c on p.id = c.post_id group by post_id) as b
+        on a.id = b.post_id
+        left join user as c on a.username=c.username order by comment_num desc
+        limit #{page},10;
+    </select>
+    
+    <select id="selectAllToHomeMyPost" resultMap="post">
+        select * from post as a
+        left join
+        (select post_id,count(0) as comment_num from post p right join comment c on p.id = c.post_id group by post_id) as b
+        on a.id = b.post_id
+        left join user as c on a.username=c.username where a.username=#{username}
+        order by create_time desc
+        limit #{page},10
+    </select>
+
+</mapper>

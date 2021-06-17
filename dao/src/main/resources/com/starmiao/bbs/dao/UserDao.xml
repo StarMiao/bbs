@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starmiao.bbs.dao.UserDao">
+    <resultMap id="users" type="User">
+        <id property="id" column="id" javaType="int"/>
+        <result property="username"  column="username" javaType="String"/>
+        <result property="password"  column="password" javaType="String"/>
+        <result property="email"  column="email" javaType="String"/>
+        <result property="path" column="path" javaType="String"/>
+        <result property="userStatus"  column="userStatus" javaType="int"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="User">
+        insert into user (username,password,email,userStatus,path)
+        values(#{username},#{password},#{email},#{userStatus},#{path})
+    </insert>
+    <update id="update" parameterType="User">
+        update user set username=#{username},password=#{password},email=#{email}
+        ,userStatus=#{userStatus} where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+
+    <select id="select" parameterType="int" resultMap="users">
+        select * from user where id=#{id}
+    </select>
+
+    <select id="selectByName" parameterType="String" resultMap="users">
+        select * from user where username=#{username}
+    </select>
+
+    <select id="selectAll" resultMap="users">
+        select * from user
+    </select>
+
+    <select id="selectUserNum" resultType="int">
+        select count(0) from user
+    </select>
+
+
+</mapper>

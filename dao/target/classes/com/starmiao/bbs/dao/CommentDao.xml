@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starmiao.bbs.dao.CommentDao">
+    <resultMap id="comments" type="Comment">
+        <id property="id" column="id" javaType="int"/>
+        <result property="userId"  column="user_id" javaType="int"/>
+        <result property="userName"  column="username" javaType="String"/>
+        <result property="content"  column="content" javaType="String"/>
+        <result property="createTime"  column="create_time" javaType="Date"/>
+        <result property="postId"  column="post_id" javaType="int"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Comment">
+        insert into comment (user_id,username,content,create_time,post_id)
+        values(#{userId},#{userName},#{content},#{createTime},#{postId})
+    </insert>
+    <update id="update" parameterType="Comment">
+        update comment set content=#{content} where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from comment where id=#{id}
+    </delete>
+
+    <select id="selectByPid" parameterType="int" resultMap="comments">
+        select a.*,b.path from comment as a
+        left join user as b
+        on a.user_id=b.id
+        where post_id = #{pid}
+        order by create_time desc;
+    </select>
+
+    <select id="selectCommentNum" parameterType="int" resultType="int">
+        select count(0) from comment where post_id=#{postId}
+    </select>
+
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starmiao.bbs.dao.AdminDao">
+    <resultMap id="admin" type="Admin">
+        <id property="id" column="id" javaType="int"/>
+        <result property="adminname"  column="adminname" javaType="String"/>
+        <result property="password"  column="password" javaType="String"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Admin">
+        insert into admin (adminname,password)
+        values(#{adminname},#{password})
+    </insert>
+    <update id="update" parameterType="Admin">
+        update admin set adminname=#{adminname},password=#{password}
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from admin where id=#{id}
+    </delete>
+
+    <select id="select" parameterType="int" resultMap="admin">
+        select * from admin where id=#{id}
+    </select>
+
+    <select id="selectByName" parameterType="String" resultMap="admin">
+        select * from admin where adminName=#{adminName}
+    </select>
+
+    <select id="selectAll" resultMap="admin">
+        select * from admin
+    </select>
+
+</mapper>
